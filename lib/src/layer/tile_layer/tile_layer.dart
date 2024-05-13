@@ -5,6 +5,7 @@ import 'package:collection/collection.dart' show MapEquality;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/src/layer/tile_layer/placeholder/tile_placeholder.dart';
 import 'package:flutter_map/src/layer/tile_layer/tile.dart';
 import 'package:flutter_map/src/layer/tile_layer/tile_bounds/tile_bounds.dart';
 import 'package:flutter_map/src/layer/tile_layer/tile_bounds/tile_bounds_at_zoom.dart';
@@ -211,6 +212,21 @@ class TileLayer extends StatefulWidget {
   /// the [key].
   final TileUpdateTransformer tileUpdateTransformer;
 
+  /// If `true`, a placeholder grid will be shown on the tiles that are loading.
+  /// It helps with indication of the tile loading process and in case when no tiles are loaded can indicate that app is responsive rather than see a blank gay screen.
+  /// If `false`, no placeholder grid will be shown.
+  ///
+  /// If `true` and [placeholder] is not set, a default grid will be shown.
+  ///
+  /// If `true` and [placeholder] is set, the [placeholder] will be shown instead.
+  final bool showPlaceholder;
+
+  ///An optional widget to be shown while the tile is loading
+  ///[showPlaceholder] should be set to true, to see the placeholder.
+  ///If [showPlaceholder] is set to false, this widget will not be shown.
+  ///If the [showPlaceholder] is set to true and this widget is not set, a default grid will be shown.
+  final Widget? placeholder;
+
   /// Create a new [TileLayer] for the [FlutterMap] widget.
   TileLayer({
     super.key,
@@ -244,6 +260,8 @@ class TileLayer extends StatefulWidget {
     this.tileBounds,
     TileUpdateTransformer? tileUpdateTransformer,
     String userAgentPackageName = 'unknown',
+    this.showPlaceholder = true,
+    this.placeholder,
   })  : assert(
           tileDisplay.when(
             instantaneous: (_) => true,
@@ -515,6 +533,9 @@ class _TileLayerState extends State<TileLayer> with TickerProviderStateMixin {
               currentPixelOrigin: map.pixelOrigin,
               tileImage: tileImage,
               tileBuilder: widget.tileBuilder,
+              placeholder: widget.showPlaceholder
+                  ? widget.placeholder ?? const TilePlaceholder()
+                  : null,
             ))
         .toList();
 

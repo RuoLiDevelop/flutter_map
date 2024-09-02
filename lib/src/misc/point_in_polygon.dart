@@ -7,7 +7,7 @@ import 'dart:ui';
 /// `polygon.first == polygon.last`.
 bool isPointInPolygon(math.Point p, List<Offset> polygon) {
   final len = polygon.length;
-  assert(len >= 3, 'not a polygon');
+  // assert(len >= 3, 'not a polygon');
   assert(polygon.first == polygon.last, 'polygon not closed');
   final double px = p.x.toDouble();
   final double py = p.y.toDouble();
